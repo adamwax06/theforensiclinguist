@@ -37,6 +37,8 @@ Vercel project: `theforensiclinguist`, in Adam's personal Vercel team.
 - Build command: `bun run build`.
 - DNS provider: Cloudflare; keep the existing Cloudflare nameservers.
 
+The site was deployed through the Vercel CLI. To deploy updates, run `vercel deploy --prod --scope adams-projects-938383af` from the repository root. The automatic GitHub connection has not been established; the Vercel CLI connection attempt was rejected.
+
 Connect `theforensiclinguist.com` and redirect `www.theforensiclinguist.com` to it. Use the exact DNS targets shown in Vercel's domain settings; keep unrelated mail records intact.
 
 ## Website direction
