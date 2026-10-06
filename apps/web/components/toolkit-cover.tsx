@@ -3,15 +3,58 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ArrowUpRight, Fingerprint, Pause, Play } from "lucide-react";
 import { Zipper } from "./codepen/zipper";
-import { motion, useReducedMotion } from "motion/react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 
 const SignalArt = dynamic(() => import("./signal-art"), { ssr: false });
 
 export function ToolkitCover() {
   const [opening, setOpening] = useState(false);
+  const [split, setSplit] = useState(false);
+  const coverRef = useRef<HTMLElement>(null);
+  const topClip = useId();
+  const bottomClip = useId();
+  const progress = useMotionValue(0);
+  const tipStart = useMotionValue(0.96);
+  const curve = useTransform(() => {
+    const p = progress.get();
+    const tip = (tipStart.get() - p * 1.1) * 100;
+    const first = tip + (100 - tip) * 0.3;
+    const second = tip + (100 - tip) * 0.66;
+    const depth = p * 92;
+    return {
+      top: `M0 0 H100 V${100 - depth} C${second} ${100 - depth} ${first} 100 ${tip} 100 H0 Z`,
+      bottom: `M0 0 H${tip} C${first} 0 ${second} ${depth} 100 ${depth} V100 H0 Z`,
+      topEdge: `M0 100 H${tip} C${first} 100 ${second} ${100 - depth} 100 ${100 - depth}`,
+      bottomEdge: `M0 0 H${tip} C${first} 0 ${second} ${depth} 100 ${depth}`,
+    };
+  });
+  const topShape = useTransform(curve, (paths) => paths.top);
+  const bottomShape = useTransform(curve, (paths) => paths.bottom);
+  const topEdge = useTransform(curve, (paths) => paths.topEdge);
+  const bottomEdge = useTransform(curve, (paths) => paths.bottomEdge);
+  useEffect(() => {
+    const cover = coverRef.current;
+    if (!cover) return;
+    const observer = new ResizeObserver(() => {
+      const body = cover.querySelector(".zipper.body")?.getBoundingClientRect();
+      if (body)
+        tipStart.set(
+          (body.left + body.width / 2) / cover.clientWidth +
+            progress.get() * 1.1,
+        );
+    });
+    observer.observe(cover);
+    return () => observer.disconnect();
+  }, [progress, tipStart]);
   const [paused, setPaused] = useState(false);
   const reducedMotion = useReducedMotion();
   const router = useRouter();
@@ -19,20 +62,40 @@ export function ToolkitCover() {
     if (reducedMotion) router.push("/library", { scroll: false });
     else setOpening(true);
   }
+  useEffect(() => {
+    if (!opening) return;
+    const playback = animate(progress, 1, {
+      duration: 1.1,
+      ease: [0.45, 0, 0.55, 1],
+      onComplete: () => setSplit(true),
+    });
+    return () => playback.stop();
+  }, [opening, progress]);
   const splitTransition = {
-    delay: 0.55,
-    duration: 0.8,
+    duration: 0.6,
     ease: [0.22, 1, 0.36, 1] as const,
   };
   return (
     <main
+      ref={coverRef}
       id="main-content"
       className={`toolkit-cover zipperable${opening ? " is-opening" : ""}`}
     >
+      <svg width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <clipPath id={topClip} clipPathUnits="objectBoundingBox">
+            <motion.path d={topShape} transform="scale(0.01)" />
+          </clipPath>
+          <clipPath id={bottomClip} clipPathUnits="objectBoundingBox">
+            <motion.path d={bottomShape} transform="scale(0.01)" />
+          </clipPath>
+        </defs>
+      </svg>
       <motion.div
         className="cover-top"
         initial={false}
-        animate={{ y: opening ? "-100%" : "0%" }}
+        animate={{ y: split ? "-100%" : "0%" }}
+        style={{ clipPath: `url(#${topClip})` }}
         transition={splitTransition}
       >
         <header className="cover-header">
@@ -63,15 +126,24 @@ export function ToolkitCover() {
         <span className="cover-index" aria-hidden="true">
           LANGUAGE / CONTEXT / EVIDENCE
         </span>
+        <svg
+          className="cover-seam"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <motion.path d={topEdge} vectorEffect="non-scaling-stroke" />
+        </svg>
       </motion.div>
-      <Zipper opening={opening} onOpen={open} />
+      <Zipper opening={opening} progress={progress} onOpen={open} />
       <motion.div
         className="cover-bottom"
         initial={false}
-        animate={{ y: opening ? "100%" : "0%" }}
+        animate={{ y: split ? "100%" : "0%" }}
+        style={{ clipPath: `url(#${bottomClip})` }}
         transition={splitTransition}
         onAnimationComplete={() => {
-          if (opening) router.push("/library", { scroll: false });
+          if (split) router.push("/library", { scroll: false });
         }}
       >
         <div className="cover-bottom-copy">
@@ -114,6 +186,14 @@ export function ToolkitCover() {
             </button>
           </div>
         </div>
+        <svg
+          className="cover-seam"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <motion.path d={bottomEdge} vectorEffect="non-scaling-stroke" />
+        </svg>
       </motion.div>
     </main>
   );

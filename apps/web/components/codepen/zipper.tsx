@@ -1,14 +1,17 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useTransform, type MotionValue } from "motion/react";
 
 export function Zipper({
   opening,
+  progress,
   onOpen,
 }: {
   opening: boolean;
+  progress: MotionValue<number>;
   onOpen: () => void;
 }) {
+  const pullX = useTransform(progress, [0, 1], ["0vw", "-110vw"]);
   return (
     <button
       className={`zip-entry${opening ? " is-opening" : ""}`}
@@ -22,9 +25,7 @@ export function Zipper({
       <motion.span
         className="zip-slider"
         aria-hidden="true"
-        initial={false}
-        animate={{ x: opening ? "-110vw" : "0vw" }}
-        transition={{ duration: 0.65, ease: [0.45, 0, 0.55, 1] }}
+        style={{ x: pullX }}
       >
         <span className="metal-zipper">
           <span className="zipper wrap">

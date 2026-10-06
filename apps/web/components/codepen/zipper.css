@@ -73,13 +73,6 @@
   background: #233c32;
 }
 
-/* Adapted from Igal Steklov's MIT page zipper: https://codepen.io/igalst/pen/ApeEQV */
-.zipperable .cover-top {
-  border-bottom: 3px dashed #d3bd8b;
-}
-.zipperable .cover-bottom {
-  border-top: 3px dashed #d3bd8b;
-}
 .zip-slider {
   position: absolute;
   right: 4vw;
