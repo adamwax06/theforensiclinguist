@@ -14,7 +14,8 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://theforensiclinguist.com"),
   title: "The Forensic Linguist",
-  description: "The Forensic Linguist. A new website is coming soon.",
+  description:
+    "A field guide to language as evidence. Explore research on authorship, sociolinguistics, discourse, and forensic speech science.",
 };
 
 export default function RootLayout({
@@ -25,6 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>
