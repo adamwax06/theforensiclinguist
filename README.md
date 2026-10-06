@@ -80,3 +80,11 @@ Both records use DNS-only mode and automatic TTL:
 | CNAME | www  | da01a73406eef0e3.vercel-dns-017.com |
 
 Vercel handles HTTPS and the permanent `www` redirect to the apex domain.
+
+## Visuals and sharing
+
+The cover uses [Paper Shaders](https://github.com/paper-design/shaders) (Apache 2.0), loaded only on the cover, with a static CSS fallback, a pause control, and reduced-motion support. [Motion](https://motion.dev/docs/react) (MIT) animates shelf layouts and book interactions. Versions are pinned in the web workspace.
+
+[Lucide](https://lucide.dev) supplies the illustrations and fingerprint identity; its license is retained in `apps/web/LUCIDE-LICENSE.txt`. [Fraunces](https://github.com/undercasetype/Fraunces) is served locally through `next/font`, with its OFL license alongside the fonts.
+
+Next.js metadata conventions generate the Open Graph images (including a unique card for every paper), Twitter cards, Apple touch icon, manifest, sitemap, and robots file. The SVG favicon and ICO use the same Lucide fingerprint. Page metadata lives in `apps/web/lib/metadata.ts`; share-card styling lives in `apps/web/lib/social-image.tsx`.

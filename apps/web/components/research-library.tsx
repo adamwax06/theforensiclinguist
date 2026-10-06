@@ -12,9 +12,23 @@ import {
   List,
   Search,
   X,
+  Fingerprint,
+  AudioLines,
+  Network,
+  ScanText,
+  ChartNoAxesCombined,
 } from "lucide-react";
 import { articles, categories, type Article } from "../content/articles";
+import { motion, MotionConfig } from "motion/react";
 import { ArticleReader } from "./article-reader";
+
+const disciplineIcons = {
+  authorship: Fingerprint,
+  sociolinguistics: Network,
+  discourse: ScanText,
+  speech: AudioLines,
+  methods: ChartNoAxesCombined,
+};
 
 const savedKey = "forensic-linguist:saved-papers";
 
@@ -136,271 +150,220 @@ export function ResearchLibrary() {
   }
 
   return (
-    <main id="main-content" className="library-page">
-      <section className="library-intro">
-        <div>
-          <p className="eyebrow">THE RESEARCH LIBRARY</p>
-          <h1>
-            Language leaves <em>a trace.</em>
-          </h1>
-          <p>
-            A shelf of ideas for making sense of it. Explore research,
-            <br className="desktop-break" /> follow a thread, and find your next
-            good question.
-          </p>
-        </div>
-        <div className="intro-aside">
-          <span aria-hidden="true">/ lɪŋˈɡwɪst /</span>
-          <p>
-            The details are
-            <br />
-            in the language.
-          </p>
-        </div>
-      </section>
-      <div className="library-workspace">
-        <aside className="library-sidebar" aria-label="Library filters">
-          <p className="eyebrow">YOUR SHELVES</p>
-          <button
-            className={`shelf-filter${!currentCategory && !savedOnly ? " active" : ""}`}
-            onClick={() =>
-              update({ category: null, saved: null, article: null })
-            }
-            aria-pressed={!currentCategory && !savedOnly}
-          >
-            <Library size={17} aria-hidden="true" />
-            <span>All research</span>
-            <span className="count">{articles.length}</span>
-          </button>
-          <button
-            className={`shelf-filter${savedOnly ? " active" : ""}`}
-            onClick={() =>
-              update({
-                saved: savedOnly ? null : "1",
-                category: null,
-                article: null,
-              })
-            }
-            aria-pressed={savedOnly}
-          >
-            <Bookmark size={17} aria-hidden="true" />
-            <span>Saved papers</span>
-            <span className="count">
-              {
-                articles.filter((article) => savedIds.includes(article.id))
-                  .length
-              }
-            </span>
-          </button>
-          <p className="eyebrow topics-label">BY DISCIPLINE</p>
-          <div className="category-filters">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                className={`category-filter${categoryId === category.id ? " active" : ""}`}
-                onClick={() =>
-                  update({
-                    category: categoryId === category.id ? null : category.id,
-                    saved: null,
-                    article: null,
-                  })
-                }
-                aria-pressed={categoryId === category.id}
-              >
-                <span
-                  className="category-dot"
-                  style={{ background: category.color }}
-                />
-                <span>{category.name}</span>
-                <span className="count">
-                  {
-                    articles.filter((article) =>
-                      article.categories.includes(category.id),
-                    ).length
-                  }
-                </span>
-              </button>
-            ))}
-          </div>
-          <div className="sidebar-note">
-            <BookOpen size={22} strokeWidth={1.3} aria-hidden="true" />
-            <h2>A collection in progress.</h2>
+    <MotionConfig reducedMotion="user">
+      <main id="main-content" className="library-page">
+        <section className="library-intro">
+          <div>
+            <p className="eyebrow">THE RESEARCH LIBRARY</p>
+            <h1>
+              Language leaves <em>a trace.</em>
+            </h1>
             <p>
-              Explore published research. Follow the references to keep
-              exploring.
+              A shelf of ideas for making sense of it. Explore research,
+              <br className="desktop-break" /> follow a thread, and find your
+              next good question.
             </p>
-            <Link href="/about">
-              A note on the collection{" "}
-              <ArrowUpRight size={14} aria-hidden="true" />
-            </Link>
           </div>
-        </aside>
-        <section className="shelf-area" aria-label="Research papers">
-          <div className="search-box">
-            <Search size={19} aria-hidden="true" />
-            <label className="sr-only" htmlFor="research-search">
-              Search the research library
-            </label>
-            <input
-              id="research-search"
-              type="search"
-              placeholder="A topic, an author, a question…"
-              value={query}
-              onChange={(event) =>
-                update({ q: event.target.value, article: null }, true)
+          <div className="intro-aside">
+            <Fingerprint size={90} strokeWidth={0.7} aria-hidden="true" />
+            <span aria-hidden="true">/ lɪŋˈɡwɪst /</span>
+            <p>
+              The details are
+              <br />
+              in the language.
+            </p>
+          </div>
+        </section>
+        <div className="library-workspace">
+          <aside className="library-sidebar" aria-label="Library filters">
+            <p className="eyebrow">YOUR SHELVES</p>
+            <button
+              className={`shelf-filter${!currentCategory && !savedOnly ? " active" : ""}`}
+              onClick={() =>
+                update({ category: null, saved: null, article: null })
               }
-            />
-            {query && (
-              <button
-                aria-label="Clear search"
-                onClick={() => update({ q: null, article: null }, true)}
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
-            )}
-          </div>
-          <div className="shelf-toolbar">
-            <div>
-              <h2>
-                {savedOnly
-                  ? "Saved papers"
-                  : (currentCategory?.name ?? "The bookshelf")}
-              </h2>
-              <p role="status">
-                {results.length} {results.length === 1 ? "paper" : "papers"}
-                {query ? ` matching “${query}”` : " to explore"}
-              </p>
+              aria-pressed={!currentCategory && !savedOnly}
+            >
+              <Library size={17} aria-hidden="true" />
+              <span>All research</span>
+              <span className="count">{articles.length}</span>
+            </button>
+            <button
+              className={`shelf-filter${savedOnly ? " active" : ""}`}
+              onClick={() =>
+                update({
+                  saved: savedOnly ? null : "1",
+                  category: null,
+                  article: null,
+                })
+              }
+              aria-pressed={savedOnly}
+            >
+              <Bookmark size={17} aria-hidden="true" />
+              <span>Saved papers</span>
+              <span className="count">
+                {
+                  articles.filter((article) => savedIds.includes(article.id))
+                    .length
+                }
+              </span>
+            </button>
+            <p className="eyebrow topics-label">BY DISCIPLINE</p>
+            <div className="category-filters">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  className={`category-filter${categoryId === category.id ? " active" : ""}`}
+                  onClick={() =>
+                    update({
+                      category: categoryId === category.id ? null : category.id,
+                      saved: null,
+                      article: null,
+                    })
+                  }
+                  aria-pressed={categoryId === category.id}
+                >
+                  <span
+                    className="category-dot"
+                    style={{ background: category.color }}
+                  />
+                  <span>{category.name}</span>
+                  <span className="count">
+                    {
+                      articles.filter((article) =>
+                        article.categories.includes(category.id),
+                      ).length
+                    }
+                  </span>
+                </button>
+              ))}
             </div>
-            <div className="shelf-controls">
-              <label className="sr-only" htmlFor="sort-papers">
-                Sort papers
+            <div className="sidebar-note">
+              <BookOpen size={22} strokeWidth={1.3} aria-hidden="true" />
+              <h2>A collection in progress.</h2>
+              <p>
+                Explore published research. Follow the references to keep
+                exploring.
+              </p>
+              <Link href="/about">
+                A note on the collection{" "}
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </Link>
+            </div>
+          </aside>
+          <section className="shelf-area" aria-label="Research papers">
+            <div className="search-box">
+              <Search size={19} aria-hidden="true" />
+              <label className="sr-only" htmlFor="research-search">
+                Search the research library
               </label>
-              <select
-                id="sort-papers"
-                value={sort}
-                onChange={(event) => update({ sort: event.target.value })}
-              >
-                <option value="collection">Collection order</option>
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="title">Title A–Z</option>
-              </select>
-              <div className="view-toggle" aria-label="Paper display">
+              <input
+                id="research-search"
+                type="search"
+                placeholder="A topic, an author, a question…"
+                value={query}
+                onChange={(event) =>
+                  update({ q: event.target.value, article: null }, true)
+                }
+              />
+              {query && (
                 <button
-                  aria-label="Bookshelf view"
-                  aria-pressed={!listView}
-                  onClick={() => update({ view: null })}
+                  aria-label="Clear search"
+                  onClick={() => update({ q: null, article: null }, true)}
                 >
-                  <Library size={17} aria-hidden="true" />
+                  <X size={16} aria-hidden="true" />
                 </button>
-                <button
-                  aria-label="List view"
-                  aria-pressed={listView}
-                  onClick={() => update({ view: "list" })}
+              )}
+            </div>
+            <div className="shelf-toolbar">
+              <div>
+                <h2>
+                  {savedOnly
+                    ? "Saved papers"
+                    : (currentCategory?.name ?? "The bookshelf")}
+                </h2>
+                <p role="status">
+                  {results.length} {results.length === 1 ? "paper" : "papers"}
+                  {query ? ` matching “${query}”` : " to explore"}
+                </p>
+              </div>
+              <div className="shelf-controls">
+                <label className="sr-only" htmlFor="sort-papers">
+                  Sort papers
+                </label>
+                <select
+                  id="sort-papers"
+                  value={sort}
+                  onChange={(event) => update({ sort: event.target.value })}
                 >
-                  <List size={17} aria-hidden="true" />
-                </button>
+                  <option value="collection">Collection order</option>
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="title">Title A–Z</option>
+                </select>
+                <div className="view-toggle" aria-label="Paper display">
+                  <button
+                    aria-label="Bookshelf view"
+                    aria-pressed={!listView}
+                    onClick={() => update({ view: null })}
+                  >
+                    <Library size={17} aria-hidden="true" />
+                  </button>
+                  <button
+                    aria-label="List view"
+                    aria-pressed={listView}
+                    onClick={() => update({ view: "list" })}
+                  >
+                    <List size={17} aria-hidden="true" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          {(query || currentCategory || savedOnly) && (
-            <div className="active-filters">
-              <span>
-                {savedOnly
-                  ? "Your reading list"
-                  : (currentCategory?.name ?? "Search results")}
-              </span>
-              <button onClick={reset}>
-                Reset filters <X size={13} aria-hidden="true" />
-              </button>
-            </div>
-          )}
-          {results.length ? (
-            <div className={listView ? "paper-list" : "bookshelf"}>
-              {results.map((article, index) => {
-                const category = categories.find(
-                  (item) => item.id === article.categories[0],
-                )!;
-                const isSelected = selected?.id === article.id;
-                const isSaved = savedIds.includes(article.id);
-                return listView ? (
-                  <div
-                    key={article.id}
-                    className={`paper-row${isSelected ? " selected" : ""}`}
-                  >
-                    <button
-                      className="paper-row-main"
-                      onClick={() => selectArticle(article.id)}
-                      aria-pressed={isSelected}
+            {(query || currentCategory || savedOnly) && (
+              <div className="active-filters">
+                <span>
+                  {savedOnly
+                    ? "Your reading list"
+                    : (currentCategory?.name ?? "Search results")}
+                </span>
+                <button onClick={reset}>
+                  Reset filters <X size={13} aria-hidden="true" />
+                </button>
+              </div>
+            )}
+            {results.length ? (
+              <div className={listView ? "paper-list" : "bookshelf"}>
+                {results.map((article, index) => {
+                  const category = categories.find(
+                    (item) => item.id === article.categories[0],
+                  )!;
+                  const DisciplineIcon =
+                    disciplineIcons[article.categories[0]!];
+                  const isSelected = selected?.id === article.id;
+                  const isSaved = savedIds.includes(article.id);
+                  return listView ? (
+                    <motion.div
+                      layout="position"
+                      key={article.id}
+                      className={`paper-row${isSelected ? " selected" : ""}`}
                     >
-                      <span className="row-number">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span>
-                        <strong>{article.title}</strong>
-                        <span>
-                          {authorLabel(article)} · {article.year} ·{" "}
-                          {article.publication}
-                        </span>
-                      </span>
-                      <ArrowUpRight size={16} aria-hidden="true" />
-                    </button>
-                    <button
-                      className="save-button"
-                      aria-label={`${isSaved ? "Unsave" : "Save"} ${article.title}`}
-                      aria-pressed={isSaved}
-                      onClick={() => toggleSaved(article.id)}
-                    >
-                      <Bookmark
-                        size={17}
-                        fill={isSaved ? "currentColor" : "none"}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className="book-item"
-                    key={article.id}
-                    style={{ "--book-color": category.color } as CSSProperties}
-                  >
-                    <button
-                      className={`book-cover${isSelected ? " selected" : ""}`}
-                      onClick={() => selectArticle(article.id)}
-                      aria-label={`Read summary: ${article.title}`}
-                      aria-pressed={isSelected}
-                    >
-                      <span className="book-series">{category.name}</span>
-                      <span className="book-cover-title">
-                        {article.coverTitle}
-                      </span>
-                      <span
-                        className={`book-motif motif-${article.categories[0]}`}
-                        aria-hidden="true"
+                      <button
+                        className="paper-row-main"
+                        onClick={() => selectArticle(article.id)}
+                        aria-pressed={isSelected}
                       >
-                        <span />
-                        <span />
-                        <span />
-                      </span>
-                      <span className="book-author">
-                        {authorLabel(article)}
-                      </span>
-                      <span className="book-edition">
-                        {article.publication}
-                        <span>{article.year}</span>
-                      </span>
-                    </button>
-                    <div className="book-caption">
-                      <span>
-                        {isSelected ? (
-                          <>
-                            <span className="selected-dot" />
-                            On the reading desk
-                          </>
-                        ) : (
-                          `${article.year} / ${article.publication}`
-                        )}
-                      </span>
+                        <span className="row-number">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span>
+                          <strong>{article.title}</strong>
+                          <span>
+                            {authorLabel(article)} · {article.year} ·{" "}
+                            {article.publication}
+                          </span>
+                        </span>
+                        <ArrowUpRight size={16} aria-hidden="true" />
+                      </button>
                       <button
                         className="save-button"
                         aria-label={`${isSaved ? "Unsave" : "Save"} ${article.title}`}
@@ -408,79 +371,152 @@ export function ResearchLibrary() {
                         onClick={() => toggleSaved(article.id)}
                       >
                         <Bookmark
-                          size={16}
+                          size={17}
                           fill={isSaved ? "currentColor" : "none"}
                           aria-hidden="true"
                         />
                       </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <Search size={32} strokeWidth={1.3} aria-hidden="true" />
-              <h3>
-                {savedOnly && !savedIds.length
-                  ? "Make room for a good read."
-                  : "No papers on this shelf."}
-              </h3>
-              <p>
-                {savedOnly && !savedIds.length
-                  ? "Use the bookmark on any paper to add it to your reading list. Your list stays in this browser."
-                  : "Try a broader topic, a different author, or another discipline."}
-              </p>
-              <button className="primary-button" onClick={reset}>
-                Explore all research{" "}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </button>
-            </div>
-          )}
-          <p className="save-error" role="status">
-            {saveError}
-          </p>
-          {results.length > 0 && (
-            <p className="shelf-hint">
-              <ArrowDown size={14} aria-hidden="true" />
-              <span>Pick a paper. Pull up a chair.</span>
-              <span>Original sources, always linked.</span>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      layout="position"
+                      transition={{
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 30,
+                      }}
+                      className="book-item"
+                      key={article.id}
+                      style={
+                        { "--book-color": category.color } as CSSProperties
+                      }
+                    >
+                      <motion.button
+                        whileHover={{ y: -8, rotate: -2 }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25,
+                        }}
+                        className={`book-cover${isSelected ? " selected" : ""}`}
+                        onClick={() => selectArticle(article.id)}
+                        aria-label={`Read summary: ${article.title}`}
+                        aria-pressed={isSelected}
+                      >
+                        <span className="book-series">{category.name}</span>
+                        <span className="book-cover-title">
+                          {article.coverTitle}
+                        </span>
+                        <span className="book-art" aria-hidden="true">
+                          <DisciplineIcon strokeWidth={0.65} />
+                          <span className="book-art-number">
+                            {String(articles.indexOf(article) + 1).padStart(
+                              2,
+                              "0",
+                            )}
+                          </span>
+                        </span>
+                        <span className="book-author">
+                          {authorLabel(article)}
+                        </span>
+                        <span className="book-edition">
+                          {article.publication}
+                          <span>{article.year}</span>
+                        </span>
+                      </motion.button>
+                      <div className="book-caption">
+                        <span>
+                          {isSelected ? (
+                            <>
+                              <span className="selected-dot" />
+                              On the reading desk
+                            </>
+                          ) : (
+                            `${article.year} / ${article.publication}`
+                          )}
+                        </span>
+                        <button
+                          className="save-button"
+                          aria-label={`${isSaved ? "Unsave" : "Save"} ${article.title}`}
+                          aria-pressed={isSaved}
+                          onClick={() => toggleSaved(article.id)}
+                        >
+                          <Bookmark
+                            size={16}
+                            fill={isSaved ? "currentColor" : "none"}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <Search size={32} strokeWidth={1.3} aria-hidden="true" />
+                <h3>
+                  {savedOnly && !savedIds.length
+                    ? "Make room for a good read."
+                    : "No papers on this shelf."}
+                </h3>
+                <p>
+                  {savedOnly && !savedIds.length
+                    ? "Use the bookmark on any paper to add it to your reading list. Your list stays in this browser."
+                    : "Try a broader topic, a different author, or another discipline."}
+                </p>
+                <button className="primary-button" onClick={reset}>
+                  Explore all research{" "}
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </button>
+              </div>
+            )}
+            <p className="save-error" role="status">
+              {saveError}
             </p>
-          )}
-        </section>
-        <aside
-          className="reading-desk"
-          id="reading-desk"
-          aria-label="Selected paper details"
-        >
-          <div className="desk-label">
-            <span className="eyebrow">THE READING DESK</span>
-            <a className="back-to-shelf" href="#research-search">
-              Back to shelf
-            </a>
-            <BookOpen size={16} aria-hidden="true" />
-          </div>
-          {selected ? (
-            <ArticleReader key={selected.id} article={selected} />
-          ) : (
-            <div className="desk-empty">
-              <BookOpen size={36} strokeWidth={1} aria-hidden="true" />
-              <p>
-                Your next paper
-                <br />
-                belongs here.
+            {results.length > 0 && (
+              <p className="shelf-hint">
+                <ArrowDown size={14} aria-hidden="true" />
+                <span>Pick a paper. Pull up a chair.</span>
+                <span>Original sources, always linked.</span>
               </p>
+            )}
+          </section>
+          <aside
+            className="reading-desk"
+            id="reading-desk"
+            aria-label="Selected paper details"
+          >
+            <div className="desk-label">
+              <span className="eyebrow">THE READING DESK</span>
+              <a className="back-to-shelf" href="#research-search">
+                Back to shelf
+              </a>
+              <BookOpen size={16} aria-hidden="true" />
             </div>
-          )}
-        </aside>
-      </div>
-      <footer className="library-footer">
-        <span>The Forensic Linguist</span>
-        <span>Language. Context. Evidence.</span>
-        <Link href="/">
-          Close the toolkit <ArrowUpRight size={14} aria-hidden="true" />
-        </Link>
-      </footer>
-    </main>
+            {selected ? (
+              <ArticleReader key={selected.id} article={selected} />
+            ) : (
+              <div className="desk-empty">
+                <BookOpen size={36} strokeWidth={1} aria-hidden="true" />
+                <p>
+                  Your next paper
+                  <br />
+                  belongs here.
+                </p>
+              </div>
+            )}
+          </aside>
+        </div>
+        <footer className="library-footer">
+          <span>The Forensic Linguist</span>
+          <span>Language. Context. Evidence.</span>
+          <Link href="/">
+            Close the toolkit <ArrowUpRight size={14} aria-hidden="true" />
+          </Link>
+        </footer>
+      </main>
+    </MotionConfig>
   );
 }

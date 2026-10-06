@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "../../lib/metadata";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Header } from "../../components/header";
 import { categories } from "../../content/articles";
 
-export const metadata: Metadata = {
-  title: "About the toolkit | The Forensic Linguist",
-};
+export const metadata = pageMetadata(
+  "About the toolkit | The Forensic Linguist",
+  "An open research library for exploring language, its patterns, and its place in the world of evidence.",
+  "/about",
+);
 
 export default function About() {
   return (

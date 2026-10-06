@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Fingerprint, Pause, Play } from "lucide-react";
+import { useReducedMotion } from "motion/react";
+
+const SignalArt = dynamic(() => import("./signal-art"), { ssr: false });
 
 export function ToolkitCover() {
   const [opening, setOpening] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = useReducedMotion();
   const router = useRouter();
   return (
     <main
@@ -22,18 +28,49 @@ export function ToolkitCover() {
             Step inside <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </header>
-        <div className="cover-title">
-          <p className="eyebrow">A field guide to language as evidence</p>
-          <h1>
-            The forensic
-            <br />
-            linguist’s <em>toolkit.</em>
-          </h1>
-          <p>
-            Follow the words. Explore the research.
-            <br />
-            Find the patterns that tell a story.
-          </p>
+        <div className="cover-composition">
+          <div className="cover-title">
+            <p className="eyebrow">A field guide to language as evidence</p>
+            <h1>
+              The forensic
+              <br />
+              linguist’s
+              <br />
+              <em>toolkit.</em>
+            </h1>
+            <p>
+              Follow the words. Explore the research.
+              <br />
+              Find the patterns that tell a story.
+            </p>
+          </div>
+          <div className="signal-figure">
+            <div className="signal-orbit" aria-hidden="true">
+              <div className="signal-art">
+                <SignalArt paused={paused || !!reducedMotion} />
+              </div>
+              <Fingerprint className="signal-fingerprint" strokeWidth={0.6} />
+              <span className="signal-cross cross-top">+</span>
+              <span className="signal-cross cross-bottom">+</span>
+            </div>
+            <div className="signal-caption">
+              <span>01 — EVERY VOICE LEAVES A PATTERN</span>
+              <button
+                onClick={() => setPaused(!paused)}
+                aria-label={
+                  paused
+                    ? "Play background animation"
+                    : "Pause background animation"
+                }
+              >
+                {paused ? (
+                  <Play size={13} aria-hidden="true" />
+                ) : (
+                  <Pause size={13} aria-hidden="true" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
         <span className="cover-index" aria-hidden="true">
           LANGUAGE / CONTEXT / EVIDENCE

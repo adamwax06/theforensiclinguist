@@ -1,3 +1,4 @@
+import { pageMetadata } from "../../../lib/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -17,13 +18,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const article = articles.find((paper) => paper.id === id);
-  return {
-    title: article
-      ? `${article.title} | The Forensic Linguist`
-      : "Paper not found",
-    description: article?.summary,
-    alternates: { canonical: `/papers/${id}` },
-  };
+  if (!article) notFound();
+  return pageMetadata(
+    `${article.title} | The Forensic Linguist`,
+    article.summary,
+    `/papers/${id}`,
+    `/papers/${id}/opengraph-image`,
+  );
 }
 
 export default async function PaperPage({
