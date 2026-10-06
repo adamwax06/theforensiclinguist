@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { articles, categories, type Article } from "../content/articles";
 import { motion, MotionConfig } from "motion/react";
+import { InteractiveBook } from "./uselayouts/interactive-book";
 import { ArticleReader } from "./article-reader";
 
 const disciplineIcons = {
@@ -391,15 +392,8 @@ export function ResearchLibrary() {
                         { "--book-color": category.color } as CSSProperties
                       }
                     >
-                      <motion.button
-                        whileHover={{ y: -8, rotate: -2 }}
-                        whileTap={{ scale: 0.97 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 25,
-                        }}
-                        className={`book-cover${isSelected ? " selected" : ""}`}
+                      <InteractiveBook
+                        className={isSelected ? "selected" : ""}
                         onClick={() => selectArticle(article.id)}
                         aria-label={`Read summary: ${article.title}`}
                         aria-pressed={isSelected}
@@ -424,7 +418,7 @@ export function ResearchLibrary() {
                           {article.publication}
                           <span>{article.year}</span>
                         </span>
-                      </motion.button>
+                      </InteractiveBook>
                       <div className="book-caption">
                         <span>
                           {isSelected ? (

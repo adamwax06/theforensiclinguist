@@ -83,7 +83,17 @@ Vercel handles HTTPS and the permanent `www` redirect to the apex domain.
 
 ## Visuals and sharing
 
-The cover uses [Paper Shaders](https://github.com/paper-design/shaders) (Apache 2.0), loaded only on the cover, with a static CSS fallback, a pause control, and reduced-motion support. [Motion](https://motion.dev/docs/react) (MIT) animates shelf layouts and book interactions. Versions are pinned in the web workspace.
+The visual effects come from existing open-source components. The custom CSS zipper, book geometry, textile patterns, and orbit decoration have been removed.
+
+| Visual                     | Source                                                                                                                                                    | License    | X discovery / creator                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------- |
+| Animated cover artwork     | [Paper Shaders Warp](https://github.com/paper-design/shaders) (`@paper-design/shaders-react` 0.0.81)                                                      | Apache 2.0 | [Stephen Haney](https://x.com/stephenhaney), [Ksenia Kondrashova](https://x.com/uuuuuulala) |
+| Entrance button and reveal | [Magic UI Shimmer Button and Blur Fade](https://github.com/magicuidesign/magicui/tree/cdb348cb4c72a9b54b554d8617801e479fbc8714/apps/www/registry/magicui) | MIT        | [Dillion Verma’s launch post](https://x.com/dillionverma/status/1793401212114801097)        |
+| Interactive book covers    | [useLayouts 3D Book](https://github.com/iurvish/uselayouts/blob/07cc4f4fb8e064643168e6fc8792127af92637f5/registry/default/example/3d-book.tsx)            | MIT        | [Urvish Mali](https://x.com/0xUrvish)                                                       |
+
+Magic UI and useLayouts are copy-and-paste registries: their source is retained in `apps/web/components/magicui` and `apps/web/components/uselayouts`, with the complete upstream licenses in `apps/web/licenses`. Magic UI’s imports were adapted to this workspace; its shimmer keyframes are taken from the official registry. useLayouts retains its 15-page fan, perspective, front-cover rotation, spine, and shadows. Integration changes add article content, responsive sizing, semantic buttons, keyboard support, reduced motion, touch scrolling, and a bounded opening angle so neighboring books stay readable. The fixed demo notebook labels and texture were removed. Tailwind supplies the registry components’ styling.
+
+Paper Shaders loads only on the cover, with a plain-color fallback, a pause control, and reduced-motion support. [Motion](https://motion.dev/docs/react) (MIT) supplies layout transitions. Ordinary page layout, typography, and content styling remain site CSS. Direct X pages blocked automated access during research; the launch post and creator links were cross-checked against public indexed posts and the authors’ repositories.
 
 [Lucide](https://lucide.dev) supplies the illustrations and fingerprint identity; its license is retained in `apps/web/LUCIDE-LICENSE.txt`. [Fraunces](https://github.com/undercasetype/Fraunces) is served locally through `next/font`, with its OFL license alongside the fonts.
 
