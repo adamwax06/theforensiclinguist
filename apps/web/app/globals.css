@@ -1,0 +1,9 @@
+* { box-sizing: border-box; }
+html { background: #f5f2ec; color: #23332e; }
+body { margin: 0; font-family: var(--font-geist-sans), sans-serif; }
+main { min-height: 100svh; padding: clamp(28px, 6vw, 88px); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.mark { width: 58px; height: 58px; border: 1px solid #a3aca3; border-radius: 50%; display: grid; place-items: center; font-family: Georgia, serif; font-size: 26px; margin-bottom: 64px; }
+.eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; margin: 0 0 28px; }
+h1 { font-family: Georgia, serif; font-weight: 400; font-size: clamp(48px, 9vw, 112px); line-height: 1.02; letter-spacing: -.045em; margin: 0; }
+.status { color: #58665d; font-size: 16px; line-height: 1.6; margin: 32px 0 64px; }
+footer { font-size: 12px; color: #58665d; padding-top: 24px; border-top: 1px solid #cbd0c6; width: min(100%, 640px); }
