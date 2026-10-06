@@ -66,7 +66,7 @@ Edit `apps/web/content/articles.ts`. The `categories` array defines the discipli
 
 For a PDF stored in this repo, add it to `apps/web/public/papers/` and set `pdfUrl` to `/papers/your-filename.pdf`. Keep publisher attribution with each paper. PDF text itself is not indexed: search covers the metadata, summaries, tags, and reading notes.
 
-Run the checks above, then commit and push to `main`. Vercel publishes the content automatically. The catalog tests catch duplicate/slash-containing IDs, missing metadata, invalid categories, unsafe links, and missing local PDF files.
+Run the checks above, then commit and push to `main`. Vercel publishes the content automatically. GitHub Actions runs the same checks on pushes and pull requests. The catalog tests catch duplicate/slash-containing IDs, missing metadata, invalid categories, unsafe links, and missing local PDF files.
 
 The six initial entries are a starter collection verified against ACL Anthology and the ISCA Archive. They are not Dara's personal collection. Their summaries and reading notes are editorial introductions, with links to the original papers. Replace or extend them as Dara's material is added.
 
