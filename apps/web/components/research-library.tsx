@@ -42,7 +42,7 @@ function authorLabel(article: Article) {
   return `${article.authors[0]}${article.authors.length > 1 ? " et al." : ""}`;
 }
 
-export function ResearchLibrary() {
+export function ResearchLibrary({ covered = false }: { covered?: boolean }) {
   const params = useSearchParams();
   const savedSnapshot = useSyncExternalStore(
     subscribeSaved,
@@ -141,7 +141,10 @@ export function ResearchLibrary() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <main id="main-content" className="library-page">
+      <main
+        id={covered ? "library-content" : "main-content"}
+        className="library-page"
+      >
         <section className="library-intro">
           <div>
             <p className="eyebrow">THE RESEARCH LIBRARY</p>

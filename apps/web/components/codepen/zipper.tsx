@@ -1,13 +1,13 @@
 "use client";
 
+import { motion } from "motion/react";
+
 export function Zipper({
   opening,
   onOpen,
-  onComplete,
 }: {
   opening: boolean;
   onOpen: () => void;
-  onComplete: () => void;
 }) {
   return (
     <button
@@ -19,17 +19,12 @@ export function Zipper({
       <span className="zip-entry-label">
         {opening ? "Opening the toolkit…" : "Unzip the toolkit"}
       </span>
-      <span
+      <motion.span
         className="zip-slider"
         aria-hidden="true"
-        onTransitionEnd={(event) => {
-          if (
-            opening &&
-            event.target === event.currentTarget &&
-            event.propertyName === "right"
-          )
-            onComplete();
-        }}
+        initial={false}
+        animate={{ x: opening ? "-110vw" : "0vw" }}
+        transition={{ duration: 0.65, ease: [0.45, 0, 0.55, 1] }}
       >
         <span className="metal-zipper">
           <span className="zipper wrap">
@@ -45,7 +40,7 @@ export function Zipper({
             </span>
           </span>
         </span>
-      </span>
+      </motion.span>
     </button>
   );
 }

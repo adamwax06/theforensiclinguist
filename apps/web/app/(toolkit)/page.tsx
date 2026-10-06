@@ -1,4 +1,4 @@
-import { ToolkitCover } from "../components/toolkit-cover";
+import { ToolkitCover } from "../../components/toolkit-cover";
 
 export default function Home() {
   return <ToolkitCover />;

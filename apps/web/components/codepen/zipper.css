@@ -73,54 +73,30 @@
   background: #233c32;
 }
 
-/* Igal Steklov's page zipper, MIT: https://codepen.io/igalst/pen/ApeEQV */
-.zipperable .cover-top,
-.zipperable .cover-bottom {
-  position: relative;
-  left: 0;
-  right: 0;
-  border: 0 dotted #d3bd8b;
-  transition:
-    left 0.8s,
-    right 0.8s,
-    border-radius 0.8s;
-}
+/* Adapted from Igal Steklov's MIT page zipper: https://codepen.io/igalst/pen/ApeEQV */
 .zipperable .cover-top {
-  border-bottom-width: 8px;
+  border-bottom: 3px dashed #d3bd8b;
 }
 .zipperable .cover-bottom {
-  border-top-width: 8px;
-}
-.zipperable.is-opening .cover-top,
-.zipperable.is-opening .cover-bottom {
-  left: -100%;
-  right: 100%;
-}
-.zipperable.is-opening .cover-top {
-  border-bottom-right-radius: 50%;
-}
-.zipperable.is-opening .cover-bottom {
-  border-top-right-radius: 50%;
+  border-top: 3px dashed #d3bd8b;
 }
 .zip-slider {
   position: absolute;
-  right: 8%;
+  right: 4vw;
   top: 11px;
   width: 80px;
   height: 44px;
-  transition: right 0.8s;
 }
-.is-opening .zip-slider {
-  right: 120%;
-}
-
 .zip-entry {
-  position: relative;
-  display: block;
+  position: absolute;
+  top: calc(50% - 33px);
+  left: 0;
   width: 100%;
   min-height: 66px;
-  margin-block: -33px;
   z-index: 2;
+}
+.zip-entry:active {
+  scale: 1;
 }
 .zip-entry-label {
   background: #233c32;
@@ -134,15 +110,12 @@
   top: -68px;
   width: 80px;
   height: 180px;
-  transform: rotate(90deg) scale(0.35);
+  transform: rotate(90deg) scale(0.45);
 }
 .zipperable.is-opening .zip-entry-label {
   visibility: hidden;
 }
 @media (max-width: 700px) {
-  .zip-slider {
-    right: 5%;
-  }
   .zip-entry-label {
     font-size: 11px;
   }
