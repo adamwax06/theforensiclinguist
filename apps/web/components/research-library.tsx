@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -13,23 +13,11 @@ import {
   Search,
   X,
   Fingerprint,
-  AudioLines,
-  Network,
-  ScanText,
-  ChartNoAxesCombined,
 } from "lucide-react";
 import { articles, categories, type Article } from "../content/articles";
 import { motion, MotionConfig } from "motion/react";
-import { InteractiveBook } from "./uselayouts/interactive-book";
+import { PhysicalBookshelf } from "./physical-bookshelf";
 import { ArticleReader } from "./article-reader";
-
-const disciplineIcons = {
-  authorship: Fingerprint,
-  sociolinguistics: Network,
-  discourse: ScanText,
-  speech: AudioLines,
-  methods: ChartNoAxesCombined,
-};
 
 const savedKey = "forensic-linguist:saved-papers";
 
@@ -119,8 +107,9 @@ export function ResearchLibrary() {
     else window.history.pushState(null, "", url);
   }
 
-  function selectArticle(id: string) {
+  function selectArticle(id: string, focusReader = true) {
     update({ article: id });
+    if (!focusReader) return;
     requestAnimationFrame(() => {
       document.getElementById("reader-title")?.focus({ preventScroll: true });
       if (window.matchMedia("(max-width: 1000px)").matches) {
@@ -333,103 +322,43 @@ export function ResearchLibrary() {
               </div>
             )}
             {results.length ? (
-              <div className={listView ? "paper-list" : "bookshelf"}>
-                {results.map((article, index) => {
-                  const category = categories.find(
-                    (item) => item.id === article.categories[0],
-                  )!;
-                  const DisciplineIcon =
-                    disciplineIcons[article.categories[0]!];
-                  const isSelected = selected?.id === article.id;
-                  const isSaved = savedIds.includes(article.id);
-                  return listView ? (
-                    <motion.div
-                      layout="position"
-                      key={article.id}
-                      className={`paper-row${isSelected ? " selected" : ""}`}
-                    >
-                      <button
-                        className="paper-row-main"
-                        onClick={() => selectArticle(article.id)}
-                        aria-pressed={isSelected}
+              !listView ? (
+                <PhysicalBookshelf
+                  ids={results.map((article) => article.id)}
+                  selectedId={selected?.id}
+                  savedIds={savedIds}
+                  onSelect={selectArticle}
+                  onSave={toggleSaved}
+                  onListView={() => update({ view: "list" })}
+                />
+              ) : (
+                <div className="paper-list">
+                  {results.map((article, index) => {
+                    const isSelected = selected?.id === article.id;
+                    const isSaved = savedIds.includes(article.id);
+                    return (
+                      <motion.div
+                        layout="position"
+                        key={article.id}
+                        className={`paper-row${isSelected ? " selected" : ""}`}
                       >
-                        <span className="row-number">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span>
-                          <strong>{article.title}</strong>
+                        <button
+                          className="paper-row-main"
+                          onClick={() => selectArticle(article.id)}
+                          aria-pressed={isSelected}
+                        >
+                          <span className="row-number">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
                           <span>
-                            {authorLabel(article)} · {article.year} ·{" "}
-                            {article.publication}
+                            <strong>{article.title}</strong>
+                            <span>
+                              {authorLabel(article)} · {article.year} ·{" "}
+                              {article.publication}
+                            </span>
                           </span>
-                        </span>
-                        <ArrowUpRight size={16} aria-hidden="true" />
-                      </button>
-                      <button
-                        className="save-button"
-                        aria-label={`${isSaved ? "Unsave" : "Save"} ${article.title}`}
-                        aria-pressed={isSaved}
-                        onClick={() => toggleSaved(article.id)}
-                      >
-                        <Bookmark
-                          size={17}
-                          fill={isSaved ? "currentColor" : "none"}
-                          aria-hidden="true"
-                        />
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      layout="position"
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 30,
-                      }}
-                      className="book-item"
-                      key={article.id}
-                      style={
-                        { "--book-color": category.color } as CSSProperties
-                      }
-                    >
-                      <InteractiveBook
-                        className={isSelected ? "selected" : ""}
-                        onClick={() => selectArticle(article.id)}
-                        aria-label={`Read summary: ${article.title}`}
-                        aria-pressed={isSelected}
-                      >
-                        <span className="book-series">{category.name}</span>
-                        <span className="book-cover-title">
-                          {article.coverTitle}
-                        </span>
-                        <span className="book-art" aria-hidden="true">
-                          <DisciplineIcon strokeWidth={0.65} />
-                          <span className="book-art-number">
-                            {String(articles.indexOf(article) + 1).padStart(
-                              2,
-                              "0",
-                            )}
-                          </span>
-                        </span>
-                        <span className="book-author">
-                          {authorLabel(article)}
-                        </span>
-                        <span className="book-edition">
-                          {article.publication}
-                          <span>{article.year}</span>
-                        </span>
-                      </InteractiveBook>
-                      <div className="book-caption">
-                        <span>
-                          {isSelected ? (
-                            <>
-                              <span className="selected-dot" />
-                              On the reading desk
-                            </>
-                          ) : (
-                            `${article.year} / ${article.publication}`
-                          )}
-                        </span>
+                          <ArrowUpRight size={16} aria-hidden="true" />
+                        </button>
                         <button
                           className="save-button"
                           aria-label={`${isSaved ? "Unsave" : "Save"} ${article.title}`}
@@ -437,16 +366,16 @@ export function ResearchLibrary() {
                           onClick={() => toggleSaved(article.id)}
                         >
                           <Bookmark
-                            size={16}
+                            size={17}
                             fill={isSaved ? "currentColor" : "none"}
                             aria-hidden="true"
                           />
                         </button>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )
             ) : (
               <div className="empty-state">
                 <Search size={32} strokeWidth={1.3} aria-hidden="true" />
